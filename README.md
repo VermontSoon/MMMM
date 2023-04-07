@@ -1,2 +1,3 @@
-Please refer to readme.pdf for details. 
- 
+Our algorithm implement is in the MMMM/ folder.
+
+We adopt a coupling-based congestion control algorithm, which estimates the bottleneck bandwidth BW based on the ACK information from the clients and calculates the total congestion window based on the srtt information of each node. Then, we use a similar method to estimate the bandwidth of each node and allocate the cwnd of each node according to the results. PieceID is then distributed to each node through weighted round-robin. The code structure is similar to the demo, where MMMMmulticheduler performs round-robin allocation and updates BW after receiving ACK information, and sessionstreamcontroller manages the cwnd of each node and estimates the bandwidth of each node.
