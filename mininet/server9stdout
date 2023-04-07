@@ -1,0 +1,163 @@
+Json file :/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/mininet/config/upnode_mn9.json
+{
+    "IP": "10.100.2.9",
+    "port": 41111,
+    "selfpeerID": "0001020304050607080910111213141516171809"
+}
+[04-07 14:08:49.601] <IN> [PCDN] [139859812340224] PCDNLOGGERSTARTED
+[04-07 14:08:49.602] <IN> [p2pmgr] [139859812340224] [DummyUpMgr] StartDownloadMgr upload on addr:10.100.2.9,port41111
+[04-07 14:08:49.602] <EV> [p2pmgr] [139859812340224] [p2pupfile] add file, rid:0001020304050607080910111213141516171819
+[04-07 14:08:49.609] <EV> [p2pmgr] [139859812340224] [p2puptask] add task, rid:0001020304050607080910111213141516171819
+[04-07 14:09:58.094] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:193
+[04-07 14:09:58.094] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv peerid:00010203040506070809101112131415161718ff, message_id:193
+[04-07 14:09:58.094] <DE> [p2pmgr] [139859803932416] [contp] start peer connect, nodatakeepspan: 60000
+[04-07 14:09:58.094] <DE> [p2pmgr] [139859803932416] [contp] peerid empty, only for upload connect
+[04-07 14:09:58.094] <DE> [p2pmgr] [139859803932416] [contp] send c2c_connect_response packet, remote_peerid:00010203040506070809101112131415161718ff, remote_ip:10.100.0.1, remote_port:48888
+[04-07 14:09:58.268] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:161
+[04-07 14:09:58.268] <EV> [p2pmgr] [139859803932416] [p2pupsess] peer upsession start, rid:0001020304050607080910111213141516171819
+[04-07 14:09:58.268] <IN> [p2pmgr] [139859803932416] [p2pupsess] send c2c_authreq_resp packet, remote_peerid:00010203040506070809101112131415161718ff, rid:0001020304050607080910111213141516171819
+[04-07 14:09:59.917] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:09:59.917] <DE> [p2pmgr] [139859803932416] [p2pupsess] recv c2c_datarequest and has the subpiece, remote_peerid:00010203040506070809101112131415161718ff
+[04-07 14:10:00.127] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:00.332] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:00.539] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:00.539] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:00.847] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:00.955] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.062] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.063] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.386] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.386] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.708] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.708] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:01.710] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.039] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.039] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.039] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.264] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.375] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.376] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.376] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.377] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.702] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.703] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.703] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:02.704] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.045] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.046] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.046] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.047] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.048] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.387] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.388] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.388] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.389] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.390] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.391] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.509] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.626] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.626] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.627] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.743] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.984] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:03.985] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:04.708] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:04.708] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:04.830] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:04.958] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.079] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.080] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.204] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.316] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.316] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.336] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.568] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.688] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.689] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.690] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.943] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:05.946] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:06.084] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:06.197] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:06.198] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:06.229] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:06.966] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:07.835] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:07.836] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.082] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.083] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.342] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.344] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.591] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.592] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.866] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:08.868] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.136] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.137] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.413] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.415] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.708] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.710] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.990] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:09.992] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:10:10.233] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+timeout!!!!!!!!!!!!!!!!
+[04-07 14:11:10.620] <EV> [p2pmgr] [139859803932416] [p2pupsess] peer upsession stop, remote_peerid:00010203040506070809101112131415161718ff, rid:0001020304050607080910111213141516171819
+[04-07 14:11:10.720] <DE> [p2pmgr] [139859803932416] [contp] stop peer connect, remote_peerid:00010203040506070809101112131415161718ff
+[04-07 14:11:29.573] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:11:29.573] <ER> [p2pmgr] [139859803932416] [p2puptask] recv packet, not find session, remote_peerid:00010203040506070809101112131415161718ff, rid:0001020304050607080910111213141516171819, message_id:209
+[04-07 14:24:37.477] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:193
+[04-07 14:24:37.477] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv peerid:00010203040506070809101112131415161718ff, message_id:193
+[04-07 14:24:37.477] <DE> [p2pmgr] [139859803932416] [contp] start peer connect, nodatakeepspan: 60000
+[04-07 14:24:37.477] <DE> [p2pmgr] [139859803932416] [contp] peerid empty, only for upload connect
+[04-07 14:24:37.477] <DE> [p2pmgr] [139859803932416] [contp] send c2c_connect_response packet, remote_peerid:00010203040506070809101112131415161718ff, remote_ip:10.100.0.1, remote_port:48888
+[04-07 14:24:37.645] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:161
+[04-07 14:24:37.645] <EV> [p2pmgr] [139859803932416] [p2pupsess] peer upsession start, rid:0001020304050607080910111213141516171819
+[04-07 14:24:37.645] <IN> [p2pmgr] [139859803932416] [p2pupsess] send c2c_authreq_resp packet, remote_peerid:00010203040506070809101112131415161718ff, rid:0001020304050607080910111213141516171819
+[04-07 14:24:39.469] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:39.469] <DE> [p2pmgr] [139859803932416] [p2pupsess] recv c2c_datarequest and has the subpiece, remote_peerid:00010203040506070809101112131415161718ff
+[04-07 14:24:39.679] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:39.883] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:40.091] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:40.295] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:40.506] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:40.827] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:40.936] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.150] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.262] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.374] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.482] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.594] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.710] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:41.932] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.042] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.266] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.385] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.505] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.614] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.732] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:42.961] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:43.315] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:44.655] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:45.023] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:45.281] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:45.406] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:45.793] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:46.166] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:46.305] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:46.448] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:46.582] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:46.712] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:46.845] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:47.144] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:47.395] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:47.536] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:47.684] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:47.801] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:48.092] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:48.363] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:48.649] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:48.906] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:24:49.184] <DE> [p2pmgr] [139859803932416] [p2pmgrimph] recv p2p_packet, message_id:209
+[04-07 14:25:49.677] <DE> [p2pmgr] [139859803932416] [contp] stop peer connect, remote_peerid:00010203040506070809101112131415161718ff
+timeout!!!!!!!!!!!!!!!!
