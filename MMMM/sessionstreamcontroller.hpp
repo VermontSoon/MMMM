@@ -238,7 +238,7 @@ public:
                 double temp3=temp2/temp1;
                 double temp4=(1-bBeta)*s_BW;
                 s_BW=temp3+temp4;
-                if(timedi>=50000) {lastSeq=recvSeq;}
+                //if(timedi>=50000) {lastSeq=recvSeq;}
                 //SPDLOG_WARN("case2: recvSeq {}, lastrecvSeq {}, gap{}",recvSeq, lastSeq, timedi);
             }
             else
@@ -317,14 +317,16 @@ public:
         Timepoint now_t = Clock::GetClock()->Now();
         AckEvent ack;
         LossEvent loss;
+        haslost = 1;
         m_lossDetect->DetectLoss(m_inflightpktmap, now_t, ack, -1, loss, m_rttstats);
         if (loss.valid)
         {
             for (auto&& pkt: loss.lossPackets)
             {
-                auto pkt_rtt = 2.25*m_rttstats.smoothed_rtt();
+                auto pkt_rtt = m_rttstats.smoothed_rtt();
                 m_rttstats.UpdateRtt(pkt_rtt,Duration::Zero(),Clock::GetClock()->Now());//丢包则把rtt设为2.25倍
                 m_inflightpktmap.RemoveFromInFlight(pkt);
+                s_BW = 0.9*s_BW;
             }
             //m_congestionCtl->OnDataAckOrLoss(ack, loss, m_rttstats);
             InformLossUp(loss);
@@ -333,7 +335,7 @@ public:
 
     Duration GetRtt()
     {
-        Duration rtt{ Duration::FromMilliseconds(200) };
+        Duration rtt{ Duration::FromMicroseconds(200000) };
         if (isRunning)
         {
             rtt = m_rttstats.SmoothedOrInitialRtt();
@@ -354,7 +356,15 @@ public:
 
     void setS_cwnd(uint32_t cwnd)
     {
-        s_cwnd = cwnd;
+        if(haslost)
+        {
+            s_cwnd = ceil(0.5*cwnd + 0.5);
+            haslost = 0;
+        }
+        else
+        {
+            s_cwnd = cwnd;
+        }
     }
 
     uint32_t GetInFlightPktNum()
@@ -370,6 +380,7 @@ public:
 
 private:
     bool isRunning{ false };
+    bool haslost{ false };
 
     basefw::ID m_sessionId;/** The remote peer id defines the session id*/
     basefw::ID m_taskid;/**The file id downloading*/

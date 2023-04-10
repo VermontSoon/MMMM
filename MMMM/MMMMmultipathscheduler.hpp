@@ -108,14 +108,14 @@ public:
             SPDLOG_DEBUG("Empty session map");
             return;
         }
-        max_RTT = Duration::Zero();
+        min_RTT = Duration::FromMicroseconds(5000000);
         for(auto&& sessionItor: m_dlsessionmap)
         {
             auto srtt=sessionItor.second->GetRtt();
-            if(srtt>max_RTT) max_RTT=srtt;
-            SPDLOG_WARN("max_RTT:{}",max_RTT.ToDebuggingValue());
+            if(srtt<min_RTT) min_RTT=srtt;
+            SPDLOG_WARN("min_RTT:{}",min_RTT.ToDebuggingValue());
         }
-        cwnd = ceil(BW*delta_N*50000/1024);
+        cwnd = ceil(BW*(delta_N/min_RTT.ToMicroseconds())*500000/1024);
         SetSessionCwnd();
         // sort session first
         SPDLOG_DEBUG("DoMultiPathSchedule, cwnd: {}, bw: {}", cwnd, BW);
@@ -160,7 +160,7 @@ public:
             double temp3=temp2/temp1;
             double temp4=(1-bBeta)*BW;
             BW=temp3+temp4;
-            if(timedi>=50000) {lastSeq=recvSeq;}
+            //if(timedi>=50000) {lastSeq=recvSeq;}
             //SPDLOG_WARN("case2: recvtic {}, lastrcvtic {}, diff {}, recvSeq {}, lastrecvSeq {}, diff {}",recvtics[recvSeq], recvtics[recvSeq-1], recvSeq, lastSeq, timedi);
         }
         else
@@ -214,7 +214,7 @@ public:
             auto& sessionId = itor.first;
             auto& sessStream = itor.second;
             sessionBW = sessStream->GetBW();
-            u_int32_t s_cwnd= ceil(cwnd*(sessionBW/totalBW));
+            u_int32_t s_cwnd= ceil(cwnd*(sessionBW/totalBW)*((double)200000/(double)sessStream->GetRtt().ToMicroseconds()));
             sessStream->setS_cwnd(s_cwnd);
             //SPDLOG_WARN("sessionID: {}, cwnd: {}, BW: {}", sessionId.ToLogStr(), s_cwnd, sessionBW);
             SPDLOG_ERROR(", sessioncwnd, sessionID:{}, ts:{}, cwnd:{}", sessionId.ToLogStr(), now_t.ToDebuggingValue(), s_cwnd);
@@ -373,13 +373,13 @@ private:
     /// It's multipath scheduler's duty to maintain session_needdownloadsubpiece, and m_sortmmap
     double BW = 0.1;
     int delta = 0;
-    int delta_N = 7;
+    double delta_N = 200000;
     uint32_t cwnd = 5;
     uint32_t recvSeq = 0;
     uint32_t lastSeq = 0;
     const float Beta = 0.25f;
     const float bBeta = 0.1f;
-    Duration max_RTT = Duration::Zero();
+    Duration min_RTT = Duration::FromMicroseconds(300000);
     std::map<fw::ID, std::set<DataNumber>> m_session_needdownloadpieceQ;// session task queues
     std::multimap<Duration, fw::shared_ptr<SessionStreamController>> m_sortmmap;
     fw::weak_ptr<MultiPathSchedulerHandler> m_phandler;

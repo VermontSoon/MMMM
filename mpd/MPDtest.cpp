@@ -29,8 +29,8 @@ int main(int argc, char** argv)
     auto combined_logger = std::make_shared<spdlog::logger>("mpdlogger", begin(sinks), end(sinks));
     //combined_logger->set_pattern("[%D %H:%M:%S.%e][%s %!: %#] %v");
     combined_logger->set_pattern("[%D %H:%M:%S.%e][%l][%s:%# %!()]%v");
-    combined_logger->set_level(spdlog::level::err);
-    combined_logger->flush_on(spdlog::level::err);
+    combined_logger->set_level(spdlog::level::debug);
+    combined_logger->flush_on(spdlog::level::debug);
     spdlog::set_default_logger(combined_logger);
 
     ////////////////////parse initiate parameters//////////////////////////////
