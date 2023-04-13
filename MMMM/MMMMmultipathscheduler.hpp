@@ -125,6 +125,56 @@ public:
 
     }
 
+        uint32_t DoSinglePathSchedule(const fw::ID& sessionid) override
+    {
+        SPDLOG_DEBUG("session:{}", sessionid.ToLogStr());
+        // if key doesn't map to a valid set, []operator should create an empty set for us
+        auto& session = m_dlsessionmap[sessionid];
+        if (!session)
+        {
+            SPDLOG_WARN("Unknown session: {}", sessionid.ToLogStr());
+            return -1;
+        }
+
+        auto uni32DataReqCnt = session->CanRequestPktCnt();
+        SPDLOG_DEBUG("Free Wnd : {}", uni32DataReqCnt);
+        // try to find how many pieces of data we should fill in sub-task queue;
+        if (uni32DataReqCnt == 0)
+        {
+            SPDLOG_WARN("Free Wnd equals to 0");
+            return -1;
+        }
+
+        if (m_downloadQueue.size() < uni32DataReqCnt)
+        {
+            auto handler = m_phandler.lock();
+            if (handler)
+            {
+                handler->OnRequestDownloadPieces(uni32DataReqCnt - m_downloadQueue.size());
+            }
+            else
+            {
+                SPDLOG_ERROR("handler = null");
+            }
+        }
+
+        /// Add task to session task queue
+        std::vector<int32_t> vecSubpieceNums;
+        // eject uni32DataReqCnt number of subpieces from
+        for (auto itr = m_downloadQueue.begin(); itr != m_downloadQueue.end() && uni32DataReqCnt > 0;)
+        {
+            vecSubpieceNums.push_back(*itr);
+            m_downloadQueue.erase(itr++);
+            --uni32DataReqCnt;
+        }
+
+        m_session_needdownloadpieceQ[sessionid].insert(vecSubpieceNums.begin(), vecSubpieceNums.end());
+
+        ////////////////////////////////////DoSendRequest
+        DoSendSessionSubTask(sessionid);
+        return 0;
+    }
+
     void OnTimedOut(const fw::ID& sessionid, const std::vector<int32_t>& pns) override
     {
         SPDLOG_DEBUG("session {},lost pieces {}", sessionid.ToLogStr(), pns);
@@ -177,7 +227,7 @@ public:
         recvSeq++;
         //SPDLOG_WARN("BW:{}, sendtics:{}, lastsendtics:{}",100*BW, sendtics[pno], sendtics[recvtoPno[lastSeq]]);
 
-        //DoSinglePathSchedule(sessionid);
+        DoSinglePathSchedule(sessionid);
     }
 
     void SortSession(std::multimap<Duration, fw::shared_ptr<SessionStreamController>>& sortmmap) override
@@ -236,31 +286,33 @@ private:
         auto& session = m_dlsessionmap[sessionid];
         uint32_t u32CanSendCnt = session->CanRequestPktCnt();
         std::vector<int32_t> vecSubpieces;
-        int i = 0;
-        bool rt = 1;
+        //int i = 0;
+        //bool rt = 1;
         for (auto itor = setNeedDlSubpiece.begin();
              itor != setNeedDlSubpiece.end() && vecSubpieces.size() < u32CanSendCnt;)
         {
             vecSubpieces.emplace_back(*itor);
             setNeedDlSubpiece.erase(itor++);
-            i++;
-            if(i%8==0)
-            {
-                rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid,vecSubpieces);
-                if(rt) 
-                {
-                    vecSubpieces.clear();
-                }
-                else 
-                {
-                    break;
-                }
-            }
         }
-        if(rt)
-        {
-            rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid, vecSubpieces);
-        }
+        //     i++;
+        //     if(i%8==0)
+        //     {
+        //         rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid,vecSubpieces);
+        //         if(rt) 
+        //         {
+        //             vecSubpieces.clear();
+        //         }
+        //         else 
+        //         {
+        //             break;
+        //         }
+        //     }
+        // }
+        // if(rt)
+        // {
+        //     rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid, vecSubpieces);
+        // }
+        bool rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid, vecSubpieces);
         if (rt)
         {
             i32Result = 0;
@@ -271,7 +323,7 @@ private:
             // fail
             // return sending pieces to main download queue
             SPDLOG_DEBUG("Send failed, Given back");
-            setNeedDlSubpiece.insert(vecSubpieces.begin(),vecSubpieces.end());
+            //setNeedDlSubpiece.insert(vecSubpieces.begin(),vecSubpieces.end());
             m_downloadQueue.insert(setNeedDlSubpiece.begin(), setNeedDlSubpiece.end());
         }
 

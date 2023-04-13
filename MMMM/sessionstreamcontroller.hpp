@@ -42,7 +42,7 @@ public:
         SPDLOG_TRACE("cwnd:{},downloadingPktCnt:{}", cwnd, downloadingPktCnt);
         if (cwnd >= downloadingPktCnt)
         {
-            return cwnd - downloadingPktCnt;
+            return std::min(cwnd - downloadingPktCnt, 8U);
         }
         else
         {

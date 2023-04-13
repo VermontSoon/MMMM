@@ -56,7 +56,7 @@ public:
 
     virtual void DoMultiPathSchedule() = 0;
 
-    //virtual uint32_t DoSinglePathSchedule(const fw::ID& sessionid) = 0;
+    virtual uint32_t DoSinglePathSchedule(const fw::ID& sessionid) = 0;
 
     virtual void OnTimedOut(const fw::ID& sessionid, const std::vector<int32_t>& spns) = 0;
 
