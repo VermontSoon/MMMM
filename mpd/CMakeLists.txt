@@ -5,14 +5,14 @@ set(APP_SOURCES
         MPDtest.cpp)
 include_directories(${PROJECT_SOURCE_DIR}/MMMM/utils
                     ${PROJECT_SOURCE_DIR}/MMMM)
-set(SOLUTION_SOURCES
+set(DEMO_SOURCES
         ${PROJECT_SOURCE_DIR}/MMMM/MMMMtransportcontroller.cpp
         ${PROJECT_SOURCE_DIR}/MMMM/utils/defaultclock.cpp
         ${PROJECT_SOURCE_DIR}/MMMM/utils/thirdparty/quiche/quic_clock.cpp
         ${PROJECT_SOURCE_DIR}/MMMM/utils/thirdparty/quiche/quic_time.cpp
         ${PROJECT_SOURCE_DIR}/MMMM/utils/thirdparty/quiche/rtt_stats.cpp)
 
-add_executable(MPDtest ${APP_SOURCES} ${SOLUTION_SOURCES}) # client node
+add_executable(MPDtest ${APP_SOURCES} ${DEMO_SOURCES}) # client node
 target_link_libraries(MPDtest libp2p_lab_module.a ${BOOST_LIBRARIES} pthread ssl crypto dl)
 
 

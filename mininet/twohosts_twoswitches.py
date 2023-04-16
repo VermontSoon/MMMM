@@ -16,7 +16,7 @@ from mininet.log import info, setLogLevel, warning
 import shlex
 import os
 
-server_num = 20  # data nodes number
+server_num = 2  # data nodes number
 curr_dir = os.getcwd()
 """
 we assume  curr_dir/ has following struct
@@ -67,13 +67,12 @@ if __name__ == '__main__':
     # connect client node with leftside switch
     net.addLink(client_node, leftswitch, cls=TCLink, bw=100)
 
-    serverdelays = ['20ms', '30ms', '40ms', '25ms', '30ms', '35ms', '40ms', '45ms', '50ms', '55ms'] # , '45ms', '60ms', '20ms', '40ms', '35ms', '40ms', '45ms', '50ms', '15ms', '55ms']
-    serverbws = [5, 5, 100, 10, 10, 10, 10, 10, 10, 10] #, 15, 50, 10, 10, 10, 10, 10, 20, 5, 20]  # Mbits
+    serverdelays = ['20ms', '30ms', '40ms', '25ms', '30ms', '35ms', '40ms', '45ms', '50ms', '55ms']
+    serverbws = [5, 5, 100, 10, 10, 10, 10, 10, 10, 10]  # Mbits
 
     # connect datanodes with right side switch, note we use tclink here
     for i in range(server_num):
-        configI = i%10
-        addTClink(rightswitch, server_nodes[i], delay=serverdelays[configI], bw=serverbws[configI])
+        addTClink(rightswitch, server_nodes[i], delay=serverdelays[i], bw=serverbws[i])
         switchid += 1
 
     # connect left and right switches with a bottlenect link, config isdelay 25ms, bw 10Mbps

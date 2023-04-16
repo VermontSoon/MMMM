@@ -58,7 +58,8 @@ bool MMMMTransportCtl::StartTransportController(TransportDownloadTaskInfo tansDl
     m_transctlHandler = transCtlHandler;
 
     m_multipathscheduler.reset(
-        new MMMMMultiPathScheduler(m_tansDlTkInfo.m_rid, m_sessStreamCtlMap, m_downloadPieces, m_lostPiecesl));
+        new MMMMMultiPathScheduler(m_tansDlTkInfo.m_rid, m_sessStreamCtlMap, m_downloadPieces, m_lostPiecesl, 
+        session_RTTs, session_cwnds));
     m_multipathscheduler->StartMultiPathScheduler(shared_from_this());
     return true;
 }
@@ -109,7 +110,7 @@ void MMMMTransportCtl::OnSessionCreate(const fw::ID &sessionid)
     auto &&sessionItor = m_sessStreamCtlMap.find(sessionid);
     if (sessionItor == m_sessStreamCtlMap.end())
     {
-        m_sessStreamCtlMap[sessionid] = std::make_shared<SessionStreamController>();
+        m_sessStreamCtlMap[sessionid] = std::make_shared<SessionStreamController>(session_RTTs,session_cwnds);
         m_sessStreamCtlMap[sessionid]->StartSessionStreamCtl(sessionid, renoccConfig, shared_from_this());
     }
     else
@@ -249,13 +250,6 @@ void MMMMTransportCtl::OnDataSent(const fw::ID &sessionid, const std::vector<int
                  sessionid.ToLogStr(),
                  datapiecesvec,
                  seqvec, senttime_us);
-    //Timepoint sendtic = Clock::GetClock()->CreateTimeFromMicroseconds(senttime_us);
-    for (auto &datapiece : datapiecesvec)
-    {
-
-        m_sendtic[datapiece] = senttime_us;
-    }
-    m_multipathscheduler->Ondatasent(m_sendtic);
     auto &&sessStreamItor = m_sessStreamCtlMap.find(sessionid);
     if (sessStreamItor != m_sessStreamCtlMap.end())
     {

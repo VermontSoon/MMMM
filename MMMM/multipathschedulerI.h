@@ -33,9 +33,11 @@ class MultiPathSchedulerAlgo
 public:
     explicit MultiPathSchedulerAlgo(const fw::ID& taskid,
             std::map<fw::ID, fw::shared_ptr<SessionStreamController>>& dlsessionmap,
-            std::set<DataNumber>& downloadQueue, std::set<int32_t>& lostPiecesQueue)
+            std::set<DataNumber>& downloadQueue, std::set<int32_t>& lostPiecesQueue, 
+            std::map<basefw::ID, uint64_t>& sessionRTTs, std::map<basefw::ID, uint64_t>& sessionCwnds)
             : m_taskid(taskid), m_dlsessionmap(dlsessionmap),
-              m_downloadQueue(downloadQueue), m_lostPiecesQueue(lostPiecesQueue)
+              m_downloadQueue(downloadQueue), m_lostPiecesQueue(lostPiecesQueue),
+              session_RTTs(sessionRTTs), session_cwnds(sessionCwnds)
     {
     }
 
@@ -66,7 +68,7 @@ public:
 
     virtual int32_t DoSendSessionSubTask(const fw::ID& sessionid) = 0;
 
-    virtual void Ondatasent(std::map<DataNumber, u_int64_t> m_sendtic) = 0;
+    //virtual void Ondatasent(std::map<DataNumber, u_int64_t> m_sendtic) = 0;
 
     virtual ~MultiPathSchedulerAlgo() = default;
 
@@ -75,5 +77,7 @@ protected:
     std::map<fw::ID, fw::shared_ptr<SessionStreamController>>& m_dlsessionmap;
     std::set<DataNumber>& m_downloadQueue; // main task queue
     std::set<DataNumber>& m_lostPiecesQueue;// the lost pieces queue, waiting to be retransmitted
+    std::map<basefw::ID, uint64_t>& session_RTTs;
+    std::map<basefw::ID, uint64_t>& session_cwnds;
 };
 

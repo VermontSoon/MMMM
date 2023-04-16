@@ -21,8 +21,11 @@ public:
 
     explicit MMMMMultiPathScheduler(const fw::ID& taskid,
             std::map<fw::ID, fw::shared_ptr<SessionStreamController>>& dlsessionmap,
-            std::set<DataNumber>& downloadQueue, std::set<int32_t>& lostPiecesQueue)
-            : MultiPathSchedulerAlgo(taskid, dlsessionmap, downloadQueue, lostPiecesQueue)
+            std::set<DataNumber>& downloadQueue, std::set<int32_t>& lostPiecesQueue,
+            std::map<basefw::ID, uint64_t>& sessionRTTs, 
+            std::map<basefw::ID, uint64_t>& sessioncwnds)
+            : MultiPathSchedulerAlgo(taskid, dlsessionmap, downloadQueue, lostPiecesQueue,
+            sessionRTTs, sessioncwnds)
     {
         SPDLOG_DEBUG("taskid :{}", taskid.ToLogStr());
     }
@@ -108,34 +111,26 @@ public:
             SPDLOG_DEBUG("Empty session map");
             return;
         }
-        min_RTT = Duration::FromMicroseconds(5000000);
-        for(auto&& sessionItor: m_dlsessionmap)
-        {
-            auto srtt=sessionItor.second->GetRtt();
-            if(srtt<min_RTT) min_RTT=srtt;
-            SPDLOG_WARN("min_RTT:{}",min_RTT.ToDebuggingValue());
-        }
-        cwnd = ceil(BW*(delta_N/min_RTT.ToMicroseconds())*500000/1024);
-        SetSessionCwnd();
+
         // sort session first
-        SPDLOG_DEBUG("DoMultiPathSchedule, cwnd: {}, bw: {}", cwnd, BW);
+        SPDLOG_DEBUG("DoMultiPathSchedule");
         SortSession(m_sortmmap);
         // send pkt requests on each session based on ascend order;
         FillUpSessionTask();
 
     }
 
-        uint32_t DoSinglePathSchedule(const fw::ID& sessionid) override
+uint32_t DoSinglePathSchedule(const fw::ID& sessionid) override
     {
         SPDLOG_DEBUG("session:{}", sessionid.ToLogStr());
+        auto&& session_itor = m_dlsessionmap.find(sessionid);
         // if key doesn't map to a valid set, []operator should create an empty set for us
-        auto& session = m_dlsessionmap[sessionid];
-        if (!session)
+        if (session_itor==m_dlsessionmap.end())
         {
             SPDLOG_WARN("Unknown session: {}", sessionid.ToLogStr());
             return -1;
         }
-
+        auto& session = session_itor->second;
         auto uni32DataReqCnt = session->CanRequestPktCnt();
         SPDLOG_DEBUG("Free Wnd : {}", uni32DataReqCnt);
         // try to find how many pieces of data we should fill in sub-task queue;
@@ -193,39 +188,6 @@ public:
         //SPDLOG_WARN("session:{}, seq:{}, pno:{}, recvtime:{}",
                 //sessionid.ToLogStr(), seq, pno, recvtime.ToDebuggingValue());
         /// rx and tx signal are forwarded directly from transport controller to session controller
-        recvtoPno[recvSeq] = pno;
-        recvtics[recvSeq] = recvtime.ToDebuggingValue();
-        if(recvSeq==0)
-        {
-            BW=(double)1024/(double)(recvtime.ToDebuggingValue()-sendtics[pno]);
-            lastSeq=recvSeq;
-            //SPDLOG_WARN("case1:");
-        }
-        else if(recvtics[recvSeq]-recvtics[recvSeq-1]>=50000||recvSeq-lastSeq<5)//刚开始小，改成receive
-        {
-            uint64_t timedi=recvtics[recvSeq]-recvtics[recvSeq-1];
-            
-            double temp1=double(recvtime.ToDebuggingValue()-sendtics[recvtoPno[lastSeq]]);
-            double temp2=bBeta*(double)1024*(recvSeq-lastSeq);
-            double temp3=temp2/temp1;
-            double temp4=(1-bBeta)*BW;
-            BW=temp3+temp4;
-            //if(timedi>=50000) {lastSeq=recvSeq;}
-            //SPDLOG_WARN("case2: recvtic {}, lastrcvtic {}, diff {}, recvSeq {}, lastrecvSeq {}, diff {}",recvtics[recvSeq], recvtics[recvSeq-1], recvSeq, lastSeq, timedi);
-        }
-        else
-        {
-            double temp1=double(recvtime.ToDebuggingValue()-sendtics[recvtoPno[lastSeq]]);
-            double temp2=Beta*(double)1024*(recvSeq-lastSeq);
-            double temp3=temp2/temp1;
-            double temp4=(1-Beta)*BW;
-            BW=temp3+temp4;
-            //BW=(1-Beta)*BW + Beta*(double)1024*(recvSeq-lastSeq)/(double)(recvtime.ToDebuggingValue()-sendtics[recvtoPno[lastSeq]]);
-            //SPDLOG_WARN("case3: temp1 {}, temp2 {}, temp3 {}, temp4 {}", temp1, temp2, temp3, temp4);
-        }
-        SPDLOG_ERROR(", totalBW, ts:{}, totalBW:{}", recvtime.ToDebuggingValue(), BW);
-        recvSeq++;
-        //SPDLOG_WARN("BW:{}, sendtics:{}, lastsendtics:{}",100*BW, sendtics[pno], sendtics[recvtoPno[lastSeq]]);
 
         DoSinglePathSchedule(sessionid);
     }
@@ -242,34 +204,34 @@ public:
 
     }
 
-    void Ondatasent(std::map<DataNumber, uint64_t> m_sendtic) override
-    {
-        sendtics=m_sendtic;
-    }
+    // void Ondatasent(std::map<DataNumber, uint64_t> m_sendtic) override
+    // {
+    //     sendtics=m_sendtic;
+    // }
 
-    void SetSessionCwnd()//计算每个session的cwnd
-    {
-        double sessionBW;
-        double totalBW=0;
-        for (auto&& itor: m_dlsessionmap)
-        {
-            auto& sessionId = itor.first;
-            auto& sessStream = itor.second;
-            totalBW = totalBW+sessStream->GetBW();
-        }
-        Timepoint now_t = Clock::GetClock()->Now();
-        SPDLOG_ERROR(", totalcwnd, ts:{}, totalcwnd:{}",now_t.ToDebuggingValue(),cwnd);
-        for (auto&& itor: m_dlsessionmap)
-        {
-            auto& sessionId = itor.first;
-            auto& sessStream = itor.second;
-            sessionBW = sessStream->GetBW();
-            u_int32_t s_cwnd= ceil(cwnd*(sessionBW/totalBW)*((double)200000/(double)sessStream->GetRtt().ToMicroseconds()));
-            sessStream->setS_cwnd(s_cwnd);
-            //SPDLOG_WARN("sessionID: {}, cwnd: {}, BW: {}", sessionId.ToLogStr(), s_cwnd, sessionBW);
-            SPDLOG_ERROR(", sessioncwnd, sessionID:{}, ts:{}, cwnd:{}", sessionId.ToLogStr(), now_t.ToDebuggingValue(), s_cwnd);
-        }
-    }
+    // void SetSessionCwnd()//计算每个session的cwnd
+    // {
+    //     double sessionBW;
+    //     double totalBW=0;
+    //     for (auto&& itor: m_dlsessionmap)
+    //     {
+    //         auto& sessionId = itor.first;
+    //         auto& sessStream = itor.second;
+    //         totalBW = totalBW+sessStream->GetBW();
+    //     }
+    //     Timepoint now_t = Clock::GetClock()->Now();
+    //     SPDLOG_ERROR(", totalcwnd, ts:{}, totalcwnd:{}",now_t.ToDebuggingValue(),cwnd);
+    //     for (auto&& itor: m_dlsessionmap)
+    //     {
+    //         auto& sessionId = itor.first;
+    //         auto& sessStream = itor.second;
+    //         sessionBW = sessStream->GetBW();
+    //         u_int32_t s_cwnd= ceil(cwnd*(sessionBW/totalBW)*((double)200000/(double)sessStream->GetRtt().ToMicroseconds()));
+    //         sessStream->setS_cwnd(s_cwnd);
+    //         //SPDLOG_WARN("sessionID: {}, cwnd: {}, BW: {}", sessionId.ToLogStr(), s_cwnd, sessionBW);
+    //         SPDLOG_ERROR(", sessioncwnd, sessionID:{}, ts:{}, cwnd:{}", sessionId.ToLogStr(), now_t.ToDebuggingValue(), s_cwnd);
+    //     }
+    // }
 
 private:
     int32_t DoSendSessionSubTask(const fw::ID& sessionid) override
@@ -286,32 +248,13 @@ private:
         auto& session = m_dlsessionmap[sessionid];
         uint32_t u32CanSendCnt = session->CanRequestPktCnt();
         std::vector<int32_t> vecSubpieces;
-        //int i = 0;
-        //bool rt = 1;
         for (auto itor = setNeedDlSubpiece.begin();
              itor != setNeedDlSubpiece.end() && vecSubpieces.size() < u32CanSendCnt;)
         {
             vecSubpieces.emplace_back(*itor);
             setNeedDlSubpiece.erase(itor++);
         }
-        //     i++;
-        //     if(i%8==0)
-        //     {
-        //         rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid,vecSubpieces);
-        //         if(rt) 
-        //         {
-        //             vecSubpieces.clear();
-        //         }
-        //         else 
-        //         {
-        //             break;
-        //         }
-        //     }
-        // }
-        // if(rt)
-        // {
-        //     rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid, vecSubpieces);
-        // }
+
         bool rt = m_dlsessionmap[sessionid]->DoRequestdata(sessionid, vecSubpieces);
         if (rt)
         {
@@ -323,14 +266,13 @@ private:
             // fail
             // return sending pieces to main download queue
             SPDLOG_DEBUG("Send failed, Given back");
-            //setNeedDlSubpiece.insert(vecSubpieces.begin(),vecSubpieces.end());
             m_downloadQueue.insert(setNeedDlSubpiece.begin(), setNeedDlSubpiece.end());
         }
 
         return i32Result;
     }
 
-    void FillUpSessionTask()
+void FillUpSessionTask()
     {
         // 1. put lost packets back into main download queue
         SPDLOG_TRACE("");
@@ -339,11 +281,11 @@ private:
             auto&& itor_pair = m_downloadQueue.emplace(lostpiece);
             if (itor_pair.second)
             {
-                SPDLOG_DEBUG("lost piece {} inserts successfully", lostpiece);
+                SPDLOG_TRACE("lost piece {} inserts successfully", lostpiece);
             }
             else
             {
-                SPDLOG_DEBUG("lost piece {} already in task queue", lostpiece);
+                SPDLOG_TRACE("lost piece {} already in task queue", lostpiece);
             }
         }
         m_lostPiecesQueue.clear();
@@ -351,20 +293,15 @@ private:
         // 2. go through every session,find how many pieces we can request at one time
 
         std::map<basefw::ID, uint32_t> toSendinEachSession;
-        uint32_t maxWeight = 0;
         for (auto&& itor: m_dlsessionmap)
         {
             auto& sessionId = itor.first;
             auto& sessStream = itor.second;
             auto sessCanSendCnt = sessStream->CanRequestPktCnt();
-            if(sessCanSendCnt>maxWeight)//求最大权重
-            {
-                maxWeight=sessCanSendCnt;
-            }
             toSendinEachSession.emplace(sessionId, sessCanSendCnt);
             if (sessCanSendCnt != 0)
             {
-                SPDLOG_DEBUG("session {} has {} free wnd", sessionId.ToLogStr(), sessCanSendCnt);
+                SPDLOG_TRACE("session {} has {} free wnd", sessionId.ToLogStr(), sessCanSendCnt);
             }
         }
         uint32_t totalSubpieceCnt = std::accumulate(toSendinEachSession.begin(), toSendinEachSession.end(),
@@ -392,24 +329,46 @@ private:
         SPDLOG_TRACE(" download queue size: {}, need pieces cnt: {}", m_downloadQueue.size(), totalSubpieceCnt);
 
         // 4. fill up each session Queue, based on min RTT first order, and send
-        std::vector<DataNumber> vecToSendPieceNum;
-        auto&& itrmQueue = m_downloadQueue.begin();
-        for(int i = 0;i<maxWeight;i++)
+        std::vector<DataNumber> vecToSendpieceNums;
+        for (auto&& rtt_sess: m_sortmmap)
         {
-            for(auto&& IDitor:toSendinEachSession)
+            auto& sessStream = rtt_sess.second;
+            auto&& sessId = sessStream->GetSessionId();
+            auto&& itor_id_ssQ = m_session_needdownloadpieceQ.find(sessId);
+            if (itor_id_ssQ != m_session_needdownloadpieceQ.end())
             {
-                auto& sessionId = IDitor.first;
-                if(itrmQueue != m_downloadQueue.end()&&toSendinEachSession[sessionId]>0)
+                auto&& id_sendcnt = toSendinEachSession.find(sessId);
+                if (id_sendcnt != toSendinEachSession.end())
                 {
-                    m_session_needdownloadpieceQ[sessionId].insert(*itrmQueue);
-                    m_downloadQueue.erase(itrmQueue++);
-                    toSendinEachSession[sessionId]=toSendinEachSession[sessionId]-1;
-                }
-            
-            }
+                    auto uni32DataReqCnt = toSendinEachSession.at(sessId);
+                    for (auto&& itr = m_downloadQueue.begin();
+                         itr != m_downloadQueue.end() && uni32DataReqCnt > 0;)
+                    {
 
+                        vecToSendpieceNums.push_back(*itr);
+                        m_downloadQueue.erase(itr++);
+                        --uni32DataReqCnt;
+
+                    }
+
+                    m_session_needdownloadpieceQ[sessId].insert(vecToSendpieceNums.begin(),
+                            vecToSendpieceNums.end());
+                    vecToSendpieceNums.clear();
+                }
+                else
+                {
+                    SPDLOG_ERROR("Can't found session {} in toSendinEachSession", sessId.ToLogStr());
+                }
+
+
+            }
+            else
+            {
+                SPDLOG_ERROR("Can't found Session:{} in session_needdownloadsubpiece", sessId.ToLogStr());
+            }
         }
-                // then send in each session
+
+        // then send in each session
         for (auto&& it_sn = m_session_needdownloadpieceQ.begin();
              it_sn != m_session_needdownloadpieceQ.end(); ++it_sn)
         {
@@ -423,21 +382,11 @@ private:
     }// end of FillUpSessionTask
 
     /// It's multipath scheduler's duty to maintain session_needdownloadsubpiece, and m_sortmmap
-    double BW = 0.1;
-    int delta = 0;
-    double delta_N = 200000;
-    uint32_t cwnd = 5;
-    uint32_t recvSeq = 0;
-    uint32_t lastSeq = 0;
-    const float Beta = 0.25f;
-    const float bBeta = 0.1f;
-    Duration min_RTT = Duration::FromMicroseconds(300000);
     std::map<fw::ID, std::set<DataNumber>> m_session_needdownloadpieceQ;// session task queues
     std::multimap<Duration, fw::shared_ptr<SessionStreamController>> m_sortmmap;
     fw::weak_ptr<MultiPathSchedulerHandler> m_phandler;
-    std::map<DataNumber, uint64_t> sendtics;
-    std::map<DataNumber, uint64_t> recvtics;
-    std::map<uint32_t, DataNumber> recvtoPno;
+
+
 
 };
 

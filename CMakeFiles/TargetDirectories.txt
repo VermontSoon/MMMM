@@ -1,5 +1,5 @@
-/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/CMakeFiles/rebuild_cache.dir
-/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/CMakeFiles/edit_cache.dir
-/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/mpd/CMakeFiles/rebuild_cache.dir
-/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/mpd/CMakeFiles/edit_cache.dir
-/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/mpd/CMakeFiles/MPDtest.dir
+/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/CMakeFiles/rebuild_cache.dir
+/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/CMakeFiles/edit_cache.dir
+/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/mpd/CMakeFiles/rebuild_cache.dir
+/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/mpd/CMakeFiles/edit_cache.dir
+/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/mpd/CMakeFiles/MPDtest.dir

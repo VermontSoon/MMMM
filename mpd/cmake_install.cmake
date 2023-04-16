@@ -1,4 +1,4 @@
-# Install script for directory: /home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/mpd
+# Install script for directory: /home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/mpd
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

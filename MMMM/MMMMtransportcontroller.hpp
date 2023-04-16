@@ -18,7 +18,7 @@ public:
     ~MMMMTransportCtlConfig() override = default;
 
     uint32_t maxWnd{ 64 };
-    uint32_t minWnd{ 1 };
+    uint32_t minWnd{ 2 };
     uint32_t slowStartThreshold{ 32 };
 
     std::string DebugInfo();
@@ -129,6 +129,8 @@ private:
     RenoCongestionCtlConfig renoccConfig;/// congestion config file
     std::map<basefw::ID, std::shared_ptr<SessionStreamController>> m_sessStreamCtlMap;/// map session id to sessionstream
     std::map<DataNumber, uint64_t> m_sendtic;
+    std::map<basefw::ID, uint64_t> session_RTTs;
+    std::map<basefw::ID, uint64_t> session_cwnds;
 };
 
 /** @class A  TransportController used to create TransportCtl

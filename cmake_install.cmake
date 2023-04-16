@@ -1,4 +1,4 @@
-# Install script for directory: /home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc
+# Install script for directory: /home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/mpd/cmake_install.cmake")
+  include("/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/mpd/cmake_install.cmake")
 
 endif()
 
@@ -51,5 +51,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/sdd/baiste_team/mmsys23-version-0.5-20230403/mmsys23lib-dev-xzc/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/sdd/baiste_team/BALIA0.6/mmsys23lib-dev-xzc/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
