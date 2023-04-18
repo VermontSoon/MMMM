@@ -534,6 +534,10 @@ private:
                 m_cwnd=1.5*m_cwnd/2;
             }
         }
+        else
+        {
+            m_cwnd =m_cwnd-1;
+        }
         session_cwnds[sessionID]=m_cwnd;
         SPDLOG_ERROR("session:{}, after Loss, m_cwnd={}", sessionID.ToLogStr(), m_cwnd);
 

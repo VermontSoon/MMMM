@@ -67,7 +67,7 @@ public:
 
     void OnSessionDestory(const fw::ID& sessionid) override
     {
-        SPDLOG_DEBUG("session: {}", sessionid.ToLogStr());
+        SPDLOG_ERROR("session: {}", sessionid.ToLogStr());
         // find the session's queue, clear the subpieces and add the subpieces to main downloading queue
         auto&& itor = m_session_needdownloadpieceQ.find(sessionid);
         if (itor == m_session_needdownloadpieceQ.end())
