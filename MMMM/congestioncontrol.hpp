@@ -296,8 +296,33 @@ private:
     void OnDataLoss(const LossEvent& lossEvent)
     {
         SPDLOG_DEBUG("lossevent:{}", lossEvent.DebugInfo());
+        Timepoint maxsentTic{ Timepoint::Zero() };
 
+        for (const auto& lostpkt: lossEvent.lossPackets)
+        {
+            maxsentTic = std::max(maxsentTic, lostpkt.sendtic);
+        }
 
+        /** In Recovery phase, cwnd will decrease 1 pkt for each lost pkt
+         *  Otherwise, cwnd will cut half.
+         * */
+        if (InSlowStart())
+        {
+            // loss in slow start, just cut half
+            m_cwnd = m_cwnd / 2;
+            m_cwnd = BoundCwnd(m_cwnd);
+
+        }
+        else //if (!LostCheckRecovery(maxsentTic))
+        {
+            // Not In slow start and not inside Recovery state
+            // Cut half
+            m_cwnd = m_cwnd / 2;
+            m_cwnd = BoundCwnd(m_cwnd);
+            m_ssThresh = m_cwnd;
+            // enter Recovery state
+        }
+        SPDLOG_DEBUG("after Loss, m_cwnd={}", m_cwnd);
     }
 
 

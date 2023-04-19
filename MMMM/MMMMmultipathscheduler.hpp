@@ -67,7 +67,7 @@ public:
 
     void OnSessionDestory(const fw::ID& sessionid) override
     {
-        SPDLOG_ERROR("session: {}", sessionid.ToLogStr());
+        SPDLOG_DEBUG("session: {}", sessionid.ToLogStr());
         // find the session's queue, clear the subpieces and add the subpieces to main downloading queue
         auto&& itor = m_session_needdownloadpieceQ.find(sessionid);
         if (itor == m_session_needdownloadpieceQ.end())
@@ -113,7 +113,7 @@ public:
         }
 
         // sort session first
-        SPDLOG_DEBUG("DoMultiPathSchedule");
+        SPDLOG_TRACE("DoMultiPathSchedule");
         SortSession(m_sortmmap);
         // send pkt requests on each session based on ascend order;
         FillUpSessionTask();
@@ -185,8 +185,8 @@ uint32_t DoSinglePathSchedule(const fw::ID& sessionid) override
 
     void OnReceiveSubpieceData(const fw::ID& sessionid, SeqNumber seq, DataNumber pno, Timepoint recvtime) override
     {
-        //SPDLOG_WARN("session:{}, seq:{}, pno:{}, recvtime:{}",
-                //sessionid.ToLogStr(), seq, pno, recvtime.ToDebuggingValue());
+        SPDLOG_WARN("session:{}, seq:{}, pno:{}, recvtime:{}",
+                sessionid.ToLogStr(), seq, pno, recvtime.ToDebuggingValue());
         /// rx and tx signal are forwarded directly from transport controller to session controller
 
         DoSinglePathSchedule(sessionid);

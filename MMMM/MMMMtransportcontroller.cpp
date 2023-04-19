@@ -135,7 +135,7 @@ void MMMMTransportCtl::OnSessionCreate(const fw::ID &sessionid)
  */
 void MMMMTransportCtl::OnSessionDestory(const fw::ID &sessionid)
 {
-    SPDLOG_TRACE("session = {}", sessionid.ToLogStr());
+    SPDLOG_ERROR("session = {}", sessionid.ToLogStr());
     if (!isRunning)
     {
         SPDLOG_WARN(" Stop session before Start transport Module");
@@ -154,11 +154,13 @@ void MMMMTransportCtl::OnSessionDestory(const fw::ID &sessionid)
     if (sessionItor == m_sessStreamCtlMap.end())
     {
         // warn: try to destroy a session we don't know
+        SPDLOG_WARN("try to destroy a session we don't know");
     }
     else
     {
         m_sessStreamCtlMap[sessionid]->StopSessionStreamCtl();
         m_sessStreamCtlMap[sessionid].reset();
+        m_sessStreamCtlMap.erase(sessionid);
     }
 }
 
