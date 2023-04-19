@@ -210,7 +210,7 @@ public:
             //sessionSendtic[datano]= sendtic.ToDebuggingValue();
             
         }
-        SPDLOG_ERROR(", sessionInflight, sessionID:{}, ts:{}, inflightpkgNum:{}", GetSessionId().ToLogStr(), sendtic.ToDebuggingValue(), GetInFlightPktNum());
+        SPDLOG_DEBUG(", sessionInflight, sessionID:{}, ts:{}, inflightpkgNum:{}", GetSessionId().ToLogStr(), sendtic.ToDebuggingValue(), GetInFlightPktNum());
     }
 
     void OnDataPktReceived(uint32_t seq, int32_t datapiece, Timepoint recvtic)
@@ -298,6 +298,11 @@ public:
             m_congestionCtl->OnDataAckOrLoss(ack, loss, m_rttstats);
             InformLossUp(loss);
         }
+    }
+
+        bool hasdisconnected()
+    {
+        return m_congestionCtl->hasdisconnected();
     }
 
     Duration GetRtt()

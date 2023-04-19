@@ -273,7 +273,7 @@ void MMMMTransportCtl::OnLossDetectionAlarm()
     {
         sessStreamItor.second->OnLossDetectionAlarm();
     }
-    SPDLOG_ERROR(", OnLossDetection, TS:{}, lostsize:{}", Clock::GetClock()->Now().ToDebuggingValue(), m_lostPiecesl.size());
+    SPDLOG_DEBUG(", OnLossDetection, TS:{}, lostsize:{}", Clock::GetClock()->Now().ToDebuggingValue(), m_lostPiecesl.size());
     // Step 2: Forward message to Multipath Scheduler
     m_multipathscheduler->DoMultiPathSchedule();
 }

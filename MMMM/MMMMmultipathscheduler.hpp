@@ -67,7 +67,7 @@ public:
 
     void OnSessionDestory(const fw::ID& sessionid) override
     {
-        SPDLOG_ERROR("session: {}", sessionid.ToLogStr());
+        SPDLOG_DEBUG("session: {}", sessionid.ToLogStr());
         // find the session's queue, clear the subpieces and add the subpieces to main downloading queue
         auto&& itor = m_session_needdownloadpieceQ.find(sessionid);
         if (itor == m_session_needdownloadpieceQ.end())
@@ -346,7 +346,11 @@ void FillUpSessionTask()
                     {
 
                         vecToSendpieceNums.push_back(*itr);
-                        m_downloadQueue.erase(itr++);
+                        if(!(sessStream->hasdisconnected()))
+                        {
+                            SPDLOG_ERROR("session connected:{}", sessStream->hasdisconnected());
+                            m_downloadQueue.erase(itr++);
+                        }
                         --uni32DataReqCnt;
 
                     }

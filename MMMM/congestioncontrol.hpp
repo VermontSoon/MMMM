@@ -150,6 +150,8 @@ public:
     /////
     virtual uint32_t GetCWND() = 0;
 
+    virtual bool hasdisconnected() = 0;
+
 //    virtual uint32_t GetFreeCWND() = 0;
 
 };
@@ -188,6 +190,11 @@ public:
     void OnDataSent(const InflightPacket& sentpkt) override
     {
         SPDLOG_TRACE("");
+    }
+
+    bool hasdisconnected() override
+    {
+        return 0;
     }
 
     void OnDataAckOrLoss(const AckEvent& ackEvent, const LossEvent& lossEvent, RttStats& rttstats) override
@@ -366,7 +373,22 @@ public:
     uint32_t GetCWND() override
     {
         SPDLOG_TRACE(" {}", m_cwnd);
+        if(m_cwnd<1)
+        {
+            SPDLOG_ERROR("session:{} disconnected", sessionID.ToLogStr());
+            Timepoint now = Clock::GetClock()->Now();
+            if(now>lastLagestLossPktSentTic+Duration::FromMilliseconds(3000))
+            {
+                SPDLOG_ERROR("session:{} trys to reconnect", sessionID.ToLogStr());
+                m_cwnd=1;
+            }
+        }
         return m_cwnd;
+    }
+
+    bool hasdisconnected() override
+    {
+        return isdisconnect;
     }
 
 //    virtual uint32_t GetFreeCWND() = 0;
@@ -446,7 +468,7 @@ private:
         double temp2=(double)(4+alpha())/5;
         double deltaCwnd = x_rThis/(sum*sum)*temp1*temp2;
         int acknum = int(1/deltaCwnd);
-        SPDLOG_ERROR("x_rThis={}, sum={}, temp1={}, deltaCwnd={}", x_rThis, sum, temp1, deltaCwnd);
+        SPDLOG_DEBUG("x_rThis={}, sum={}, temp1={}, deltaCwnd={}", x_rThis, sum, temp1, deltaCwnd);
         return acknum;
     }
 
@@ -454,6 +476,9 @@ private:
     void OnDataRecv(const AckEvent& ackEvent)
     {
         SPDLOG_DEBUG("ackevent:{},m_cwnd:{}", ackEvent.DebugInfo(), m_cwnd);
+        losscount=16;
+        maydisconnect = 2;
+        isdisconnect=0;
         if (InSlowStart())
         {
             /// add 1 for each ack event
@@ -463,7 +488,7 @@ private:
             {
                 ExitSlowStart();
             }
-            SPDLOG_DEBUG("new m_cwnd:{}", m_cwnd);
+            SPDLOG_ERROR("session:{}, slowstart new m_cwnd:{}", sessionID.ToLogStr(), m_cwnd);
         }
         else
         {
@@ -509,12 +534,27 @@ private:
     {
         SPDLOG_DEBUG("lossevent:{}", lossEvent.DebugInfo());
         Timepoint lagestLostSentTic=Timepoint::Zero();
+        if(m_cwnd<3)
+        {
+            maydisconnect=maydisconnect-1;
+            SPDLOG_ERROR("session:{}, maydisconnect={}, losscount={}", sessionID.ToLogStr(), maydisconnect, losscount);
+        }
+        losscount=losscount-1;
+
         for(auto lossPacket: lossEvent.lossPackets)
         {
             if(lossPacket.sendtic>lagestLostSentTic)
             {
                 lagestLostSentTic=lossPacket.sendtic;
             }
+        }
+        
+        if(maydisconnect<=0&&losscount<=0)
+        {
+            m_cwnd=0;
+            SPDLOG_ERROR("session:{}, disconnected, m_cwnd={}", sessionID.ToLogStr(), m_cwnd);
+            isdisconnect=1;
+            return;
         }
 
         if(InSlowStart())
@@ -553,6 +593,9 @@ private:
     uint32_t m_cwnd{ 2 };
     uint32_t m_cwndCnt{ 0 }; /** in congestion avoid phase, used for counting ack packets*/
     Timepoint lastLagestLossPktSentTic{ Timepoint::Zero() };
+    int losscount=16;
+    int maydisconnect = 2;
+    bool isdisconnect=0;
 
 
     uint32_t m_minCwnd{ 2 };
