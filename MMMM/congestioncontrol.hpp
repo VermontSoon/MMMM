@@ -507,10 +507,27 @@ private:
         if (InSlowStart())
         {
             /// add 1 for each ack event
-            m_cwnd += 1;
-
+            if(firstinss)
+            {
+                firstinss=0;
+                if(m_cwnd<15&&m_cwnd>0)
+                {
+                    p=firstp[m_cwnd-1];
+                }
+                else
+                {
+                    p=1;
+                }
+                SPDLOG_ERROR("session:{}, first slowstart p:{} m_cwnd:{}", sessionID.ToLogStr(), p, m_cwnd);
+            }
+            m_cwnd += p;
+            if (p>1)
+            {
+                p--;
+            }
             if (m_cwnd >= m_ssThresh)
             {
+                firstinss=1;
                 ExitSlowStart();
             }
             SPDLOG_ERROR("session:{}, slowstart new m_cwnd:{}", sessionID.ToLogStr(), m_cwnd);
@@ -618,6 +635,9 @@ private:
     uint32_t m_cwnd{ 2 };
     uint32_t m_cwndCnt{ 0 }; /** in congestion avoid phase, used for counting ack packets*/
     Timepoint lastLagestLossPktSentTic{ Timepoint::Zero() };
+    int firstp[14]={5,5,5,5,5,5,4,4,4,4,3,3,3,2};
+    int p=5;
+    bool firstinss=1;
     int losscount=64;
     int maydisconnect = 2;
     bool isdisconnect=0;

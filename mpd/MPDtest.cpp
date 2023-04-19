@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     std::shared_ptr<MMMMTransportCtlConfig> myTransportCtlConfig = std::make_shared<MMMMTransportCtlConfig>();
     // these values will be passed to demo transport module
     myTransportCtlConfig->minWnd = 2;
-    myTransportCtlConfig->maxWnd = 50000;
+    myTransportCtlConfig->maxWnd = 64;
 
     // Create your TransportCtlFactory
     std::shared_ptr<MMMMTransportCtlFactory> myTransportFactory = std::make_shared<MMMMTransportCtlFactory>();
