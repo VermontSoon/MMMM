@@ -501,7 +501,7 @@ private:
     void OnDataRecv(const AckEvent& ackEvent)
     {
         SPDLOG_DEBUG("ackevent:{},m_cwnd:{}", ackEvent.DebugInfo(), m_cwnd);
-        losscount=16;
+        losscount=64;
         maydisconnect = 2;
         isdisconnect=0;
         if (InSlowStart())
@@ -618,7 +618,7 @@ private:
     uint32_t m_cwnd{ 2 };
     uint32_t m_cwndCnt{ 0 }; /** in congestion avoid phase, used for counting ack packets*/
     Timepoint lastLagestLossPktSentTic{ Timepoint::Zero() };
-    int losscount=16;
+    int losscount=64;
     int maydisconnect = 2;
     bool isdisconnect=0;
 
